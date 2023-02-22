@@ -114,7 +114,7 @@ def handle_start(recipient_id, message_text=FRONT_PAGE_NODE_ID, title=None):
             ]
         )
         return 'HANDLE_EMAIL'
-
+    # pattern_category - паттерн для проверки сообщения на соответствие формату номера категории
     pattern_category = re.compile(r'\b\w{8}-\w{4}-\w{4}-\w{4}-\w{12}')
     node_id_verify = bool(pattern_category.match(message_text))
     node_id = message_text if node_id_verify else FRONT_PAGE_NODE_ID
