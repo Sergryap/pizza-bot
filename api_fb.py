@@ -9,7 +9,7 @@ def get_button_template(recipient_id, text, buttons):
     url = 'https://graph.facebook.com/v2.6/me/messages'
     params = {'access_token': FACEBOOK_TOKEN}
     headers = {'Content-Type': 'application/json'}
-    json_data = {
+    data = {
         'recipient': {
             'id': recipient_id
         },
@@ -24,7 +24,7 @@ def get_button_template(recipient_id, text, buttons):
             }
         }
     }
-    response = requests.post(url=url, params=params, headers=headers, json=json_data)
+    response = requests.post(url=url, params=params, headers=headers, json=data)
     response.raise_for_status()
 
 
@@ -32,7 +32,7 @@ def get_generic_template(recipient_id, elements):
     url = 'https://graph.facebook.com/v2.6/me/messages'
     params = {'access_token': FACEBOOK_TOKEN}
     headers = {'Content-Type': 'application/json'}
-    json_data = {
+    data = {
         'recipient': {
             'id': recipient_id,
         },
@@ -46,5 +46,5 @@ def get_generic_template(recipient_id, elements):
             },
         },
     }
-    response = requests.post(url=url, params=params, headers=headers, json=json_data)
+    response = requests.post(url=url, params=params, headers=headers, json=data)
     response.raise_for_status()
