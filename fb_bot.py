@@ -220,10 +220,6 @@ def handler_cart(recipient_id, message_text=None, title=None):
         item_cart_id, product_name = message_text.split('_')
         api.remove_cart_item(recipient_id, item_cart_id)
         send_message(recipient_id, f'Пицца {product_name} удалена из корзины')
-    # elif title == 'Доставка':
-    #     pass
-    # elif title == 'Самовывоз':
-    #     pass
     total_value = (
         api.get_cart(recipient_id)
         ['data']['meta']['display_price']['without_tax']['formatted']
