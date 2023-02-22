@@ -505,26 +505,6 @@ def checkout_cart(reference, customer_id, first_name, last_name, address, phone_
     return response.json()
 
 
-def create_category(name, description):
-    url = 'https://api.moltin.com/v2/categories'
-    headers = {
-        'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
-        'Content-Type': 'application/json'
-    }
-    json_data = {
-        'data': {
-            'type': 'category',
-            'name': name,
-            'slug': slugify(name),
-            'description': description,
-            'status': 'live'
-        }
-    }
-    response = requests.post(url, headers=headers, json=json_data)
-    response.raise_for_status()
-    return response.json()
-
-
 def get_node_products(hierarchy_id, node_id):
     url = f'https://api.moltin.com/pcm/hierarchies/{hierarchy_id}/nodes/{node_id}/products'
     headers = {'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}'}
@@ -533,10 +513,10 @@ def get_node_products(hierarchy_id, node_id):
     return response.json()
 
 
-def create_webhook_integration(webhook_url):
+def create_webhook_integration(webhook_url, access_token):
     url = 'https://api.moltin.com/v2/integrations'
     headers = {
-        'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
+        'Authorization': f'Bearer {access_token}',
         'Content-Type': 'application/json'
     }
     json_data = {
@@ -563,4 +543,5 @@ if __name__ == '__main__':
     env = Env()
     env.read_env()
     check_token()
-    create_webhook_integration('https://starburger-serg.store')
+    token = os.environ["ACCESS_TOKEN"]
+    create_webhook_integration('https://starburger-serg.store', access_token=token)
