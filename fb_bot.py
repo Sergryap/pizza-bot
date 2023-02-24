@@ -53,9 +53,7 @@ def webhook():
     if data.get('object') == 'page':
         for entry in data['entry']:
             for messaging_event in entry['messaging']:
-                if messaging_event.get('message'):
-                    handle_users_reply(messaging_event)
-                elif messaging_event.get('postback'):
+                if messaging_event.get('message') or messaging_event.get('postback'):
                     handle_users_reply(messaging_event)
     elif data.get('triggered_by') == 'catalog-release.updated':
         for node_id in [FRONT_PAGE_NODE_ID, SPECIAL_NODE_ID, SATISFYING_NODE_ID, SPICY_NODE_ID]:
