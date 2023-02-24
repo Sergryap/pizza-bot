@@ -95,3 +95,100 @@ pip install -r requirements.txt
 python3 bot_tg.py
 ```
 
+## Как установить бота для Facebook
+
+Бот facebook реализован в модуле fb_bot.py посредством технологии webhook.
+
+### Для запуска webhook (специального сайта на который приходят события от api facebook) выполните следующее:
+1. Установите nginx на своем удаленном сервере и пропишите в его настройках следующую конфигурацию:
+```
+server {
+        location /images/ {
+                alias /opt/facebook-bot-webhook/images/;
+        }      
+        location / {
+                 include '/etc/nginx/proxy_params';
+                 proxy_pass http://127.0.0.1:8003/;
+        }
+
+	  root /var/www/html;
+    server_name starburger-serg.store;
+    listen [::]:443 ssl ipv6only=on;
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/starburger-serg.store/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/starburger-serg.store/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+}
+server {
+    if ($host = starburger-serg.store) {
+        return 301 https://$host$request_uri;
+    }
+    
+	listen 80 ;
+	listen [::]:80 ;
+    server_name starburger-serg.store;
+    return 404;
+}
+```
+При этом замените название домена на своё
+
+2. Настройте автоматическое обновление сертификатов для домена, создав два файла:
+
+certbot-renewal.service:
+```
+[Unit]
+Description=Certbot Renewal
+
+[Service]
+ExecStart=/usr/bin/certbot renew --force-renewal --post-hook "systemctl reload nginx.service"
+```
+certbot-renewal.timer:
+```
+[Unit]
+Description=Timer for Certbot Renewal
+
+[Timer]
+OnBootSec=300
+OnUnitActiveSec=1w
+
+[Install]
+WantedBy=multi-user.target
+```
+3. Настройте автоматический запуск webhook:
+
+Для этого создайте файл `/etc/systemd/system/facebook-bot-webhook.service`:
+```
+[Unit]
+Description=fb-webhook-site
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/facebook-bot-webhook
+EnvironmentFile=/opt/facebook-bot-webhook/.env
+ExecStart=/opt/facebook-bot-webhook/venv/bin/gunicorn -w 3 -b 127.0.0.1:8003 fb_bot:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+4. В файл `.env` добавьте значения переменных:
+
+```
+HIERARCHY_ID=<HIERARCHY ID от магазина moltin>
+PAGE_ACCESS_TOKEN=<Токен от вашего приложения facebook>
+VERIFY_TOKEN=<токен для верификации webhook - произвольная строка>
+```
+
+5. Запустите бота, выполнив команды
+
+```
+systemctl daemon-reload
+systemctl start facebook-bot-webhook.service
+systemctl enable facebook-bot-webhook.service 
+```
+
+#### Ссылка на fb приложение с ботом:
+[fb-pizza-bot](https://www.facebook.com/profile.php?id=100089995515393)

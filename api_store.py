@@ -29,7 +29,7 @@ def create_product(name: str, sku: str, description: str, price: int):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'product',
             'name': name,
@@ -48,7 +48,7 @@ def create_product(name: str, sku: str, description: str, price: int):
             'commodity_type': 'physical'
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -59,7 +59,7 @@ def create_pcm_product(name: str, sku: str, description: str):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'product',
             'attributes': {
@@ -72,7 +72,7 @@ def create_pcm_product(name: str, sku: str, description: str):
             },
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -83,7 +83,7 @@ def add_product_price(price_book_id: str, sku: str, price: int):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'product-price',
             'attributes': {
@@ -97,7 +97,7 @@ def add_product_price(price_book_id: str, sku: str, price: int):
             }
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -121,13 +121,13 @@ def create_main_image_relationship(product_id, image_id):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'file',
             'id': image_id
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
 
 
@@ -157,15 +157,15 @@ def create_relationships_to_products(
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json',
     }
-    json_data = {'data': []}
+    data = {'data': []}
     for product in products['data']:
-        json_data['data'].append(
+        data['data'].append(
             {
                 'type': 'product',
                 'id': product['id']
             }
         )
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -194,7 +194,7 @@ def create_flow(name, description, enabled=True):  # 'id': '40a7fb8f-fc3b-42be-b
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'flow',
             'name': name,
@@ -203,7 +203,7 @@ def create_flow(name, description, enabled=True):  # 'id': '40a7fb8f-fc3b-42be-b
             'enabled': enabled
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -231,7 +231,7 @@ def create_field(
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'field',
             'name': name,
@@ -252,10 +252,10 @@ def create_field(
         }
     }
     if validation_rules:
-        json_data['data'].update({'validation_rules': validation_rules})
+        data['data'].update({'validation_rules': validation_rules})
     if default:
-        json_data['data'].update({'default': default})
-    response = requests.post(url=url, headers=headers, json=json_data)
+        data['data'].update({'default': default})
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -290,14 +290,14 @@ def create_entry(flow_slug, fields_data):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'entry'
         }
     }
     for field_slug, field_value in fields_data.items():
-        json_data['data'].update({field_slug: field_value})
-    response = requests.post(url=url, headers=headers, json=json_data)
+        data['data'].update({field_slug: field_value})
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -308,7 +308,7 @@ def create_entry_relationship(flow_slug, entry_id, field_slug, resource_type, re
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': [
             {
                 'type': resource_type,
@@ -316,7 +316,7 @@ def create_entry_relationship(flow_slug, entry_id, field_slug, resource_type, re
             }
         ]
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -335,13 +335,13 @@ def create_cart(name, description='pizza-order'):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json',
     }
-    json_data = {
+    data = {
         'data': {
             'name': name,
             'description': description
         }
     }
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -380,14 +380,14 @@ def add_product_to_cart(product_id, quantity, reference):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json',
     }
-    json_data = {
+    data = {
         'data': {
             'id': product_id,
             'type': 'cart_item',
             'quantity': quantity,
         }
     }
-    response = requests.post(url=url, headers=headers, json=json_data)
+    response = requests.post(url=url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -405,10 +405,10 @@ def create_customer(name, email, password=None):
         'email': email,
         'password': password,
     }
-    json_data = {
+    finish_data = {
         'data': {key: value for key, value in data.items() if value is not None}
     }
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=finish_data)
     response.raise_for_status()
     return response.json()
 
@@ -419,7 +419,7 @@ def create_customer_address(customer_id, first_name, address):
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'type': 'address',
             'first_name': first_name,
@@ -431,7 +431,7 @@ def create_customer_address(customer_id, first_name, address):
             'city': '-'
         }
     }
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -476,7 +476,7 @@ def checkout_cart(reference, customer_id, first_name, last_name, address, phone_
         'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}',
         'Content-Type': 'application/json'
     }
-    json_data = {
+    data = {
         'data': {
             'customer': {
                 'id': customer_id
@@ -500,7 +500,41 @@ def checkout_cart(reference, customer_id, first_name, last_name, address, phone_
             }
         }
     }
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()
+    return response.json()
+
+
+def get_node_products(hierarchy_id, node_id):
+    url = f'https://api.moltin.com/pcm/hierarchies/{hierarchy_id}/nodes/{node_id}/products'
+    headers = {'Authorization': f'Bearer {os.environ["ACCESS_TOKEN"]}'}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
+
+def create_webhook_integration(webhook_url, access_token):
+    url = 'https://api.moltin.com/v2/integrations'
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'data': {
+            'type': 'integration',
+            'name': 'Catalog',
+            'description': 'Track сhanges in the сatalog',
+            'enabled': True,
+            'observes': [
+                'catalog-release.updated',
+            ],
+            'integration_type': 'webhook',
+            'configuration': {
+                'url': webhook_url
+            }
+        }
+    }
+    response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
@@ -509,3 +543,5 @@ if __name__ == '__main__':
     env = Env()
     env.read_env()
     check_token()
+    token = os.environ["ACCESS_TOKEN"]
+    create_webhook_integration('https://starburger-serg.store', access_token=token)
