@@ -276,6 +276,8 @@ def handler_cart(recipient_id, message_text=None, title=None):
 
 def handle_email(recipient_id, message_text=None, title=None):
     if message_text == 'NEXT_STEP':
+        # если пользователь отменил ввод email, то записываем условный email
+        # поскольку moltin требует email
         user_email = 'none@none.com'
     else:
         user_email = message_text.lower().strip()
